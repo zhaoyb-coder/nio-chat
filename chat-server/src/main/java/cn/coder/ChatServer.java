@@ -1,6 +1,11 @@
 package cn.coder;
 
 
+import cn.coder.message.MessageHandler;
+import cn.coder.message.MessageHandlerFactory;
+import cn.coder.module.Message;
+import cn.coder.util.ProtoStuffUtil;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -61,7 +66,10 @@ public class ChatServer {
     }
 
 
+
     public static void main(String[] args) {
+
+
         System.out.println("开始初始化服务器...");
         ChatServer chatServer = new ChatServer();
         chatServer.launch();
@@ -112,8 +120,10 @@ public class ChatServer {
         @Override
         public void run() {
             try {
+                System.out.println("调用。。1");
                 //如果有一个及以上的客户端的数据准备就绪
                 while (!Thread.currentThread().isInterrupted()) {
+                    System.out.println("222");
                     //当注册的事件到达时，方法返回；否则,该方法会一直阻塞
                     selector.select();
                     //获取当前选择器中所有注册的监听事件
@@ -123,8 +133,9 @@ public class ChatServer {
                         it.remove();
                         //如果"接收"事件已就绪
                         if (key.isAcceptable()) {
+                            System.out.println(11);
                             //交由接收事件的处理器处理
-                            //handleAcceptRequest();
+                            handleAcceptRequest();
                         } else if (key.isReadable()) {
                             //如果"读取"事件已就绪
                             //取消可读触发标记，本次处理完后才打开读取事件标记
@@ -141,6 +152,19 @@ public class ChatServer {
 
         public void shutdown() {
             Thread.currentThread().interrupt();
+        }
+    }
+
+    private void handleAcceptRequest() {
+        try {
+            SocketChannel client = serverSocketChannel.accept();
+            // 接收的客户端也要切换为非阻塞模式
+            client.configureBlocking(false);
+            // 监控客户端的读操作是否就绪
+            client.register(selector, SelectionKey.OP_READ);
+            System.out.printf("服务器连接客户端:%s",client);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -176,6 +200,15 @@ public class ChatServer {
                 key.selector().wakeup();
                 byte[] bytes = baos.toByteArray();
                 baos.close();
+                Message message = ProtoStuffUtil.deserialize(bytes, Message.class);
+                MessageHandler messageHandler = MessageHandlerFactory.getMessageHandler(message);
+                try {
+                    messageHandler.handle(message, selector, key, null, onlineUsers);
+                } catch (InterruptedException e) {
+                    System.out.println("服务器线程被中断");
+                    //exceptionHandler.handle(client, message);
+                    e.printStackTrace();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
