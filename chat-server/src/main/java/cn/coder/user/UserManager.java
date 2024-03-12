@@ -34,13 +34,6 @@ public class UserManager {
 
 
     private UserManager() {
-        users = new ConcurrentHashMap<>();
-        users.put("user1", User.builder().username("user1").password("pwd1").build());
-        users.put("user2", User.builder().username("user2").password("pwd2").build());
-        users.put("user3", User.builder().username("user3").password("pwd3").build());
-        users.put("user4", User.builder().username("user4").password("pwd4").build());
-        users.put("user5", User.builder().username("user5").password("pwd5").build());
-        onlineUsers = new ConcurrentHashMap<>();
     }
 
     public synchronized  boolean login(SocketChannel channel, String username, String password) {
