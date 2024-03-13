@@ -157,11 +157,15 @@ public class ChatServer {
 
     private void handleAcceptRequest() {
         try {
+            System.out.println(22);
             SocketChannel client = serverSocketChannel.accept();
+            System.out.println(33);
             // 接收的客户端也要切换为非阻塞模式
             client.configureBlocking(false);
             // 监控客户端的读操作是否就绪
+            System.out.println(44);
             client.register(selector, SelectionKey.OP_READ);
+            System.out.println(55);
             System.out.printf("服务器连接客户端:%s",client);
         } catch (IOException e) {
             e.printStackTrace();
