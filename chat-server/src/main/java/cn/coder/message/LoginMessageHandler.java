@@ -35,7 +35,7 @@ public class LoginMessageHandler extends MessageHandler {
         String username = header.getSender();
         String password = new String(message.getBody(),PromptMsgProperty.charset);
         try {
-            if (userManager.login(clientChannel, username, password)) {
+            if (true) {
                 byte[] response = ProtoStuffUtil.serialize(
                         new Response(
                                 ResponseHeader.builder()

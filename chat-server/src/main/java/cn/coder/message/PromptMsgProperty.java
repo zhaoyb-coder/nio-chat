@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * @author zhaoyubo
  * @title PromptMsgProperty
- * @description <TODO description class purpose>
+ * @description 提示信息
  * @create 2024/3/11 14:06
  **/
 public class PromptMsgProperty {

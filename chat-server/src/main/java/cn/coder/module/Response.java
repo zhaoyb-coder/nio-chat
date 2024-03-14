@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 /**
  * @author zhaoyubo
  * @title Response
- * @description <TODO description class purpose>
+ * @description 响应体
  * @create 2024/3/11 14:08
  **/
 @Data

@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * @author zhaoyubo
  * @title ResponseCode
- * @description <TODO description class purpose>
+ * @description 响应码
  * @create 2024/3/11 14:10
  **/
 public enum ResponseCode {
