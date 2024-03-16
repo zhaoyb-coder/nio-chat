@@ -149,7 +149,7 @@ public class ChatClient extends Frame {
 
     public static void main(String[] args) {
         System.out.println("开始客户端初始化......");
-        ChatClient client = new ChatClient();
+        ChatClient client = new ChatClient("Client", 200, 200, 300, 200);
         client.launch();
     }
 
