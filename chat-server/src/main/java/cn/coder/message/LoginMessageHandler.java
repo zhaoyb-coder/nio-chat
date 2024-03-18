@@ -1,15 +1,5 @@
 package cn.coder.message;
 
-import cn.coder.module.Message;
-import cn.coder.module.MessageHeader;
-import cn.coder.module.Response;
-import cn.coder.module.ResponseCode;
-import cn.coder.module.ResponseHeader;
-import cn.coder.module.ResponseType;
-import cn.coder.module.Task;
-import cn.coder.user.UserManager;
-import cn.coder.util.ProtoStuffUtil;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -17,6 +7,15 @@ import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import cn.coder.module.Message;
+import cn.coder.module.Response;
+import cn.coder.module.ResponseCode;
+import cn.coder.module.ResponseHeader;
+import cn.coder.module.ResponseType;
+import cn.coder.module.Task;
+import cn.coder.user.UserManager;
+import cn.coder.util.ProtoStuffUtil;
 
 /**
  * @author zhaoyubo
@@ -29,49 +28,30 @@ public class LoginMessageHandler extends MessageHandler {
     private UserManager userManager = UserManager.getInstance();
 
     @Override
-    public void handle(Message message, Selector server, SelectionKey client, BlockingQueue<Task> queue, AtomicInteger onlineUsers) throws InterruptedException {
-        SocketChannel clientChannel = (SocketChannel) client.channel();
-        MessageHeader header = message.getHeader();
-        String username = header.getSender();
-        String password = new String(message.getBody(),PromptMsgProperty.charset);
+    public void handle(Message message, Selector server, SelectionKey client, BlockingQueue<Task> queue,
+        AtomicInteger onlineUsers) throws InterruptedException {
+        SocketChannel clientChannel = (SocketChannel)client.channel();
         try {
-            if (true) {
-                byte[] response = ProtoStuffUtil.serialize(
-                        new Response(
-                                ResponseHeader.builder()
-                                        .type(ResponseType.PROMPT)
-                                        .sender(message.getHeader().getSender())
-                                        .timestamp(message.getHeader().getTimestamp())
-                                        .responseCode(ResponseCode.LOGIN_SUCCESS.getCode()).build(),
-                                String.format(PromptMsgProperty.LOGIN_SUCCESS,onlineUsers.incrementAndGet()).getBytes(PromptMsgProperty.charset)));
-                clientChannel.write(ByteBuffer.wrap(response));
-                //连续发送信息不可行,必须要暂时中断一下
-                //粘包问题
-                Thread.sleep(10);
-                //登录提示广播
-                byte[] loginBroadcast = ProtoStuffUtil.serialize(
-                        new Response(
-                                ResponseHeader.builder()
-                                        .type(ResponseType.NORMAL)
-                                        .sender(SYSTEM_SENDER)
-                                        .timestamp(message.getHeader().getTimestamp()).build(),
-                                String.format(PromptMsgProperty.LOGIN_BROADCAST, message.getHeader().getSender()).getBytes(PromptMsgProperty.charset)));
-                super.broadcast(loginBroadcast,server);
+            byte[] response = ProtoStuffUtil.serialize(new Response(
+                ResponseHeader.builder().type(ResponseType.PROMPT).sender(message.getHeader().getSender())
+                    .timestamp(message.getHeader().getTimestamp()).responseCode(ResponseCode.LOGIN_SUCCESS.getCode())
+                    .build(),
+                String.format(PromptMsgProperty.LOGIN_SUCCESS, onlineUsers.incrementAndGet())
+                    .getBytes(PromptMsgProperty.charset)));
+            clientChannel.write(ByteBuffer.wrap(response));
+            // 连续发送信息不可行,必须要暂时中断一下
+            // 粘包问题
+            Thread.sleep(10);
+            // 登录提示广播
+            byte[] loginBroadcast = ProtoStuffUtil.serialize(new Response(
+                ResponseHeader.builder().type(ResponseType.NORMAL).sender(SYSTEM_SENDER)
+                    .timestamp(message.getHeader().getTimestamp()).build(),
+                String.format(PromptMsgProperty.LOGIN_BROADCAST, message.getHeader().getSender())
+                    .getBytes(PromptMsgProperty.charset)));
+            super.broadcast(loginBroadcast, server);
 
-            } else {
-                byte[] response = ProtoStuffUtil.serialize(
-                        new Response(
-                                ResponseHeader.builder()
-                                        .type(ResponseType.PROMPT)
-                                        .responseCode(ResponseCode.LOGIN_FAILURE.getCode())
-                                        .sender(message.getHeader().getSender())
-                                        .timestamp(message.getHeader().getTimestamp()).build(),
-                                PromptMsgProperty.LOGIN_FAILURE.getBytes(PromptMsgProperty.charset)));
-                clientChannel.write(ByteBuffer.wrap(response));
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 }
-

@@ -108,7 +108,6 @@ public class ChatClient extends Frame {
                 message = new Message(MessageHeader.builder().type(MessageType.BROADCAST).sender(username)
                     .timestamp(System.currentTimeMillis()).build(), content.getBytes(charset));
             }
-            System.out.println(message);
             clientChannel.write(ByteBuffer.wrap(ProtoStuffUtil.serialize(message)));
         } catch (IOException e) {
             e.printStackTrace();
@@ -216,7 +215,8 @@ public class ChatClient extends Frame {
                     break;
                 case NORMAL:
                     String content = formatMessage(taContent.getText(), response);
-                    System.out.println(content);
+                    taContent.setText(content);
+                    taContent.setCaretPosition(content.length());
                     break;
                 default:
                     break;

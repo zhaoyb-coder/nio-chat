@@ -6,16 +6,18 @@ import cn.coder.module.MessageType;
 /**
  * @author zhaoyubo
  * @title MessageHandlerFactory
- * @description <TODO description class purpose>
+ * @description 消息处理器工厂
  * @create 2024/3/11 14:23
  **/
 public class MessageHandlerFactory {
 
-    public static MessageHandler getMessageHandler(Message message){
+    public static MessageHandler getMessageHandler(Message message) {
         MessageType type = message.getHeader().getType();
-        switch(type) {
+        switch (type) {
             case LOGIN:
                 return new LoginMessageHandler();
+            case BROADCAST:
+                return new BroadcastMessageHandler();
             default:
                 return null;
 

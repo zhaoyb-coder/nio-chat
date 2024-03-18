@@ -7,14 +7,10 @@ package cn.coder.module;
  * @create 2024/3/8 14:57
  **/
 public enum MessageType {
-    LOGIN(1,"登录"),
-    LOGOUT(2,"注销"),
-    NORMAL(3,"单聊"),
-    BROADCAST(4,"群发"),
-    TASK(4,"任务");
+    LOGIN(1, "登录"), LOGOUT(2, "注销"), NORMAL(3, "单聊"), BROADCAST(4, "群发");
 
     private int code;
-    private String  desc;
+    private String desc;
 
     MessageType(int code, String desc) {
         this.code = code;
