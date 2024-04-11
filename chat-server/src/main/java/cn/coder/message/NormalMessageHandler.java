@@ -18,7 +18,7 @@ import cn.coder.user.UserManager;
 import cn.coder.util.ProtoStuffUtil;
 
 /**
- * Created by SinjinSong on 2017/5/23.
+ * 单聊消息
  */
 public class NormalMessageHandler extends MessageHandler {
 

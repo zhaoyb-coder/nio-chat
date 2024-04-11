@@ -18,6 +18,8 @@ public class MessageHandlerFactory {
                 return new LoginMessageHandler();
             case BROADCAST:
                 return new BroadcastMessageHandler();
+            case NORMAL:
+                return new NormalMessageHandler();
             default:
                 return null;
 
